@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Brainrot Finder</title>
+<style>
+body{font-family:sans-serif;margin:20px;background:#f2f2f2}
+table{border-collapse:collapse;width:100%;background:white}
+th,td{padding:8px;border:1px solid #ddd}
+th{background:#1976d2;color:white}
+.btn{background:#4CAF50;color:white;padding:6px 10px;border-radius:5px;text-decoration:none}
+</style>
+</head>
+<body>
+<h1>🧠 Brainrot Finder</h1>
+<p>Servidores que contêm os modelos procurados:</p>
+<table id="tabela"><thead><tr><th>JobId</th><th>Modelos</th><th>Última Detecção</th><th>Ações</th></tr></thead><tbody></tbody></table>
+<script>
+async function carregar(){
+  const res = await fetch('/api/servers');
+  const data = await res.json();
+  const tbody = document.querySelector('#tabela tbody');
+  tbody.innerHTML = '';
+  for(const item of data){
+    const tr = document.createElement('tr');
+    const link = `https://www.roblox.com/games/${item.placeId}/server/${item.jobId}`;
+    const last = item.lastSeen ? new Date(item.lastSeen*1000).toLocaleString() : '';
+    tr.innerHTML = `<td>${item.jobId}</td><td>${item.models}</td><td>${last}</td><td><a href='${link}' target='_blank' class='btn'>Entrar</a></td>`;
+    tbody.appendChild(tr);
+  }
+}
+carregar();
+setInterval(carregar, 15000);
+</script>
+</body>
+</html>
